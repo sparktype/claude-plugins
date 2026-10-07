@@ -48,4 +48,4 @@ claude --plugin-dir mods/decide   # 폴더를 직접 로드하고, 저장하면 
 
 ## 라이선스
 
-아직 정하지 않았다.
+MIT. 자세한 내용은 [LICENSE](LICENSE)를 본다.

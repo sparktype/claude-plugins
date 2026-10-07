@@ -2,5 +2,7 @@
   "name": "decide",
   "version": "0.1.0",
   "description": "decide의 판정 결과, 게이트 판정, 백엔드 상태를 Claude Code 안에서 보여주는 읽기 전용 모드",
+  "author": { "name": "SangSun Park" },
+  "license": "MIT",
   "types": "./types/index.d.ts"
 }
