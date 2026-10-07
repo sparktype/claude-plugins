@@ -77,7 +77,13 @@ export const register: Register = on => {
   })
 
   // 4. 판정 밴드: decide, decide_many 결과를 저장해 프롬프트 위에 보여준다.
-  for (const tool of ['mcp__decide__decide', 'mcp__decide__decide_many']) {
+  // 플러그인이 묶은 MCP는 mcp__plugin_decide_decide__*, `decide install`이 등록한 MCP는 mcp__decide__*로 보인다.
+  for (const tool of [
+    'mcp__plugin_decide_decide__decide',
+    'mcp__plugin_decide_decide__decide_many',
+    'mcp__decide__decide',
+    'mcp__decide__decide_many',
+  ]) {
     on('tool.call', { tool }, async ($, e, next) => {
       const ran = await next(e)
       const parsed = ran.isError || ran.text === undefined ? null : parseDecision(ran.text)
