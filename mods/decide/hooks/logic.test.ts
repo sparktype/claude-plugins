@@ -1,7 +1,7 @@
 // logic.ts 순수 함수 검증
 import { expect, test } from 'claude-code/testing'
 
-import { allowShare, levelOf, resolveRoute, panelModel, segments, gateAlert, matchesCommand, parseDecision, parseGate, statusText, summarizeLog } from './logic'
+import { STATUS_SCRIPT, allowShare, levelOf, resolveRoute, panelModel, segments, gateAlert, matchesCommand, parseDecision, parseGate, statusText, summarizeLog } from './logic'
 
 const ASK = '{"ts":1,"gate":"bash-risk","mode":"audit","verdict":"ask","probs":{"allow":0.3,"ask":0.65,"deny":0.05},"backend":"local","model":"clef-flash","latency_ms":1107.4,"rule":null,"failure":null,"command":"rm -rf build"}'
 
@@ -30,8 +30,17 @@ test('명령 앞부분으로 로그와 대조한다', () => {
 })
 
 test('상태 줄에 백엔드·지연·데몬을 보인다', () => {
-  expect(statusText(parseGate(ASK), true)).toBe('decide · local/clef-flash · 1107ms · daemon ●')
-  expect(statusText(null, false)).toBe('decide · daemon ○')
+  // 엔진이 상태 줄 앞에 플러그인 이름(decide:)을 붙이므로 문구에 다시 넣지 않는다.
+  expect(statusText(parseGate(ASK), true)).toBe('local/clef-flash · 1107ms · daemon ●')
+  expect(statusText(null, false)).toBe('daemon ○')
+})
+
+test('상태 스크립트는 로그 줄을 echo가 아니라 printf로 낸다', () => {
+  // macOS의 sh는 echo가 \\n 같은 이스케이프를 해석한다. 명령에 줄바꿈이 든 게이트 로그 줄이 깨져 상태 줄에서 게이트 정보가 사라졌다.
+  expect(STATUS_SCRIPT).not.toContain('echo "LAST=')
+  expect(STATUS_SCRIPT).not.toContain('echo "MODEL=')
+  expect(STATUS_SCRIPT).toContain("printf 'LAST=%s")
+  expect(STATUS_SCRIPT).toContain("printf 'MODEL=%s")
 })
 
 test('decide와 decide_many 결과를 줄로 바꾼다', () => {

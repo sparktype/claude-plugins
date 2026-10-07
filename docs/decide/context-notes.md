@@ -159,3 +159,16 @@
   모델이 질문을 더 잘 쓰는지는 재지 않았다.
 - `diagnose.sh`는 실제 환경에서 돌려 두 번 고쳤다. MCP 목록의 들여쓴 부가 줄(위치, 경고)을 서버로 세어 개수가 부풀던 것과, 옛 데몬이 남아
   프로세스가 둘인 상황을 안내하지 않던 것이다. 돌려 본 환경에서 `decide` 저장소의 `.mcp.json`이 플러그인과 도구를 두 벌로 만드는 것도 잡았다.
+
+## 2026-10-07 상태 줄 정리
+
+- 사용자 보고: 상태 줄이 `⚠ decide: decide · daemon ●`로 나온다. 원인은 둘이다.
+  1. 문구에 `decide · `가 이미 들어 있는데 엔진이 상태 줄 앞에 플러그인 이름(`decide:`)을 붙여 이름이 두 번 나왔다(토스트 제목을 플러그인 이름으로 붙이는 것과 같은 방식으로 보인다).
+     `statusText`에서 `decide · `를 뺐다.
+  2. 백엔드와 모델과 지연이 안 나오고 `daemon ●`만 나왔다. 상태 스크립트가 로그 줄을 `echo "MODEL=$(...)"`로 내는데, macOS의 `sh`는 `echo`가 `\n` 같은
+     이스케이프를 해석해 명령에 줄바꿈이 든 로그 줄의 JSON을 깨뜨렸다. 파싱이 `null`이라 게이트 정보 없이 데몬 표시만 남았다. 현재 로그 줄 중 이스케이프가 든
+     것이 209개다. `printf 'LAST=%s\\n'`으로 바꿨고, 스크립트는 `logic.ts`의 `STATUS_SCRIPT`로 옮겼다(`ROUTE_SCRIPT`와 같은 자리).
+- 확인: 실제 `gate.log`로 `bun`에서 스크립트와 `parseGate`를 돌려 고치기 전 `decide · daemon ●`, 고친 뒤 `typesafe/jev-1.13.0 · 256ms · daemon ●`를 봤다.
+  테스트 환경은 `node:` 모듈을 못 써서(`a hooks module imports its own files by relative path and "claude-code", nothing else`) 같은 버그가 다시 들어오지 않게 하는
+  정적 검사(`echo "LAST=` 금지, `printf 'LAST=%s` 존재)만 테스트로 남겼다.
+- `⚠`는 mod 코드에 없다. 엔진이 붙이는 표시로 보이지만 확인하지 못했고 mod에서 바꿀 수 없다. 없애려면 상태 줄 자체를 끄는 수밖에 없다(`$.ui.status(undefined)`).

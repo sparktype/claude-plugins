@@ -40,11 +40,19 @@ export function gateAlert(gate: Gate): Alert | undefined {
   return { ts: gate.ts, text: `gate ${gate.verdict} · ${why}`, color }
 }
 
+// 엔진이 상태 줄 앞에 플러그인 이름(decide:)을 붙이므로 문구에는 다시 넣지 않는다.
 export function statusText(gate: Gate | null, isDaemonUp: boolean): string {
   const daemon = isDaemonUp ? 'daemon ●' : 'daemon ○'
-  if (!gate) return `decide · ${daemon}`
-  return `decide · ${gate.backend}/${gate.model} · ${Math.round(gate.latencyMs)}ms · ${daemon}`
+  if (!gate) return daemon
+  return `${gate.backend}/${gate.model} · ${Math.round(gate.latencyMs)}ms · ${daemon}`
 }
+
+// gate.log 마지막 줄, 모델이 답한 마지막 줄, 데몬 소켓을 읽는 스크립트. 로그 줄은 echo가 아니라 printf로 낸다.
+// macOS의 sh는 echo가 \n 같은 이스케이프를 해석해, 명령에 줄바꿈이 든 줄의 JSON을 깨뜨린다.
+export const STATUS_SCRIPT = `f=~/.cache/decide/gate.log
+printf 'LAST=%s\\n' "$(tail -n 1 $f)"
+printf 'MODEL=%s\\n' "$(grep '"backend":"' $f | tail -n 1)"
+test -S ~/.cache/decide/decide.sock && echo UP || echo DOWN`
 
 function answerLine(id: string, a: any): string | null {
   if (!a || typeof a.type !== 'string') return null

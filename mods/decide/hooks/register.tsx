@@ -3,7 +3,7 @@ import { atom, read, update } from 'claude-code'
 import type { Register } from 'claude-code'
 
 import type { Decision, Gate } from '../types'
-import { COLORS, ROUTE_SCRIPT, allowShare, gateAlert, matchesCommand, panelModel, parseDecision, parseGate, resolveRoute, statusText, summarizeLog } from './logic'
+import { COLORS, ROUTE_SCRIPT, STATUS_SCRIPT, allowShare, gateAlert, matchesCommand, panelModel, parseDecision, parseGate, resolveRoute, statusText, summarizeLog } from './logic'
 
 const PANE = 'decide-stats'
 const gate = atom({ plugin: 'decide', key: 'gate' } as const, null)
@@ -17,14 +17,7 @@ const alert = atom({ plugin: 'decide', key: 'alert' } as const, null)
 // gate.log 마지막 줄, 모델이 답한 마지막 줄, 데몬 소켓을 읽어 상태 줄을 갱신한다. 마지막 줄을 돌려준다.
 // 규칙·사전 필터 줄은 backend가 비어 있어 상태 줄에는 모델이 답한 마지막 줄을 쓴다.
 async function refresh($: any): Promise<Gate | null> {
-  const run = await $.process.run([
-    'sh',
-    '-c',
-    `f=~/.cache/decide/gate.log
-echo "LAST=$(tail -n 1 $f)"
-echo "MODEL=$(grep '"backend":"' $f | tail -n 1)"
-test -S ~/.cache/decide/decide.sock && echo UP || echo DOWN`,
-  ])
+  const run = await $.process.run(['sh', '-c', STATUS_SCRIPT])
   const field = (key: string) => run.stdout.split('\n').find((l: string) => l.startsWith(key + '='))?.slice(key.length + 1) ?? ''
   const last = parseGate(field('LAST'))
   const model = parseGate(field('MODEL'))
