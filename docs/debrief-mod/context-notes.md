@@ -10,3 +10,7 @@
 - 상태가 비어도 밴드를 그린다(`…`). 값이 채워진 뒤에만 그리게 했더니 박스가 안 보였던 적이 있어서다. 상태는 프롬프트 제출 때도 갱신해 session.start 타이머에 기대지 않는다.
 - 목소리 이름은 마지막으로 가드를 통과한 speak의 voice로 정한다(서브에이전트 speak도 포함). 모듈이 다시 로드되면 기록이 비어 다음 speak 전까지 안 보인다.
 - 확인 못 한 것: 위험 Bash·민감 경로 정규식의 오탐·미탐, VS Code 표면에서의 동작(AbovePrompt는 터미널·데스크톱만).
+- 2026-10-07 스킬 5개는 플러그인 `skills/`에 둔다(debrief 본체 `SKILL_NAMES`는 Rust 템플릿·테스트·전 호스트 설치라 과하다). 내용은 debrief README, 훅 알림 설계 문서, voice_catalog.rs, configuration.rs에서 가져왔다.
+- `debrief-tune`이 다루는 설정 키는 configuration.rs의 camelCase 필드명이다. README의 설정 표에는 없는 키(longTurnSeconds, sessionLabel, dndSync, teamNotices, decideEnabled)가 있어 코드를 기준으로 했다.
+- 확인 못 한 것: 범위 밖 speed·text 입력의 처리(검증 거절인지 보정인지), 훅 알림 설계 문서의 미검증 필드명(notification_type, error_type), 모드별 억제를 ModePolicy 코드로 직접 대조하는 일은 README 표에 의존했다.
+- 직접 인자 없는 `debrief mute|companion|dnd`는 토글이라 skill 전체에서 on/off 명시를 강조했다(세션 중 실제 사고가 있었다).

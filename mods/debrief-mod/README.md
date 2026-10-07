@@ -9,6 +9,16 @@
 - **speak 가드.** `mcp__debrief__speak`가 한 턴에 두 번 이상, 240자 초과, 3문장 초과, 목록 형태이면 거부한다. `priority: subagent`는 예외다. 가드 코드가 실패하면 speak를 막지 않는다.
 - **브리핑 로그 Pane.** `/debrief log`로 최근 50개 브리핑(시각, 목소리, lane, emotion, 문구)을 본다.
 
+## 스킬
+
+| 스킬 | 언제 켜지나 | 하는 일 |
+| --- | --- | --- |
+| `debrief-mod:debrief-doctor` | 소리가 안 나거나 오류 토스트가 뜰 때, `debrief doctor`가 이상을 보고할 때 | `status`, `doctor`, `last-error.json`을 읽어 음소거·모드·데몬·모델·배선 순으로 원인을 좁히고 복구 명령을 안내(읽기 전용 진단) |
+| `debrief-mod:debrief-tune` | 너무 시끄럽거나 알림이 잦을 때, 모드·볼륨·목소리를 바꿀 때 | 모드 효과, CLI로 바꾸는 항목과 `config.json` 키(`longTurnSeconds` 등), 백업-수정-검증 절차 |
+| `debrief-mod:debrief-ownership` | 코드를 쓰거나 바꾼 턴을 speak로 마무리할 때, 가드가 거부했을 때 | 다음 행동으로 사용자가 직접 확인할 핵심을 고르는 기준과 두 문장 작성법 |
+| `debrief-mod:debrief-voices` | speak 인자(voice, lane, emotion, priority)를 고를 때 | F1–M5 이름·역할, lane·emotion 선택 기준, 값 범위 |
+| `debrief-mod:debrief-hooks` | 훅 알림이 잦거나 안 올 때 | 알림 종류와 쿨다운, 안 오는 원인 순서, `teamNotices`·`longTurnSeconds` 조정 |
+
 ## 요구 사항
 
 - Apple Silicon macOS, debrief 설치(`brew install sparktype/tap/debrief` 다음 `debrief install`). 모드가 `~/.local/bin/debrief`를 부른다.

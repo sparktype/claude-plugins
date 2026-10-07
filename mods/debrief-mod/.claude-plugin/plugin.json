@@ -1,7 +1,7 @@
 {
   "name": "debrief-mod",
-  "version": "0.1.0",
-  "description": "debrief TTS 데몬을 Claude Code 안에서 제어·관찰합니다: /debrief 커맨드, 상태바, 오류 토스트, speak 가드, 오너십 밴드, 브리핑 로그 Pane.",
+  "version": "0.2.0",
+  "description": "debrief TTS 데몬을 Claude Code 안에서 제어·관찰하는 모드: /debrief 커맨드, 프롬프트 위 상태 줄, 오류 토스트, speak 가드, 브리핑 로그 Pane과 진단·튜닝·오너십·목소리·훅 스킬 5개.",
   "author": {
     "name": "SangSun Park"
   },

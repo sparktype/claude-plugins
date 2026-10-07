@@ -7,7 +7,7 @@ Claude Code 플러그인(모드) 모음이다. 저장소 하나가 마켓플레�
 | 이름 | 설명 | 상세 |
 | --- | --- | --- |
 | `decide` | [decide](https://github.com/sparktype/decide)의 판정 상태를 패널, 상태 줄, 알림으로 보여주는 모드. `decide` 바이너리, MCP 서버(stdio), bash-risk 게이트 훅, 사용 스킬 3개를 함께 가진다 | [mods/decide](mods/decide/README.md) |
-| `debrief-mod` | [debrief](https://github.com/sparktype/debrief)(로컬 TTS)를 `/debrief` 커맨드, 프롬프트 위 상태 한 줄, 오류 토스트, speak 계약 가드, 브리핑 로그 Pane으로 다루는 모드 | [mods/debrief-mod](mods/debrief-mod/README.md) |
+| `debrief-mod` | [debrief](https://github.com/sparktype/debrief)(로컬 TTS)를 `/debrief` 커맨드, 프롬프트 위 상태 한 줄, 오류 토스트, speak 계약 가드, 브리핑 로그 Pane으로 다루는 모드. 진단·튜닝·오너십·목소리·훅 스킬 5개를 함께 가진다 | [mods/debrief-mod](mods/debrief-mod/README.md) |
 
 ## 설치
 
