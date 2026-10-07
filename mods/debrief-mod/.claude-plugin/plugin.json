@@ -1,0 +1,10 @@
+{
+  "name": "debrief-mod",
+  "version": "0.1.0",
+  "description": "debrief TTS 데몬을 Claude Code 안에서 제어·관찰합니다: /debrief 커맨드, 상태바, 오류 토스트, speak 가드, 오너십 밴드, 브리핑 로그 Pane.",
+  "author": {
+    "name": "SangSun Park"
+  },
+  "license": "MIT",
+  "types": "./types/index.d.ts"
+}

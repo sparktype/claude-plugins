@@ -1,0 +1,12 @@
+# debrief-mod 결정 노트
+- 한 mod로 묶음: 6개가 모두 debrief CLI/상태 파일을 공유하고 파일 3개로 충분하기 때문.
+- `$`는 헬퍼 함수에 넘길 수 없음(validate가 거부). 순수 로직은 hooks/rules.ts로 분리해 테스트하고, `$` 호출은 훅 안에 인라인.
+- `/debrief mute|companion|dnd`는 on|off|toggle을 반드시 요구: debrief CLI는 인자 없으면 토글이라 실수 방지.
+- speak 가드는 fail-open: 훅이 던지면 건너뛰어 speak가 그대로 진행(debrief의 "완료를 막지 않는다" 원칙).
+- 오류 토스트 첫 폴링은 기준선만 저장해 이전 세션의 낡은 오류를 띄우지 않음.
+- 위험 Bash/민감 경로 정규식은 휴리스틱(rules.ts). 오탐/미탐은 열려 있음.
+- 가정(미검증): mcp__debrief__speak의 tool.call 입력이 평평한 필드(text, priority, voice…)로 온다고 가정.
+- 2026-10-07 상태 표시는 `$.ui.status` 대신 `AbovePrompt` 밴드로 옮겼다. 처음엔 둥근 테두리 박스였으나 선이 굵어 보여 `borderDimColor`를 거쳐 테두리를 없앴다(터미널 선 굵기는 글꼴이 정해 코드로 못 바꾼다).
+- 상태가 비어도 밴드를 그린다(`…`). 값이 채워진 뒤에만 그리게 했더니 박스가 안 보였던 적이 있어서다. 상태는 프롬프트 제출 때도 갱신해 session.start 타이머에 기대지 않는다.
+- 목소리 이름은 마지막으로 가드를 통과한 speak의 voice로 정한다(서브에이전트 speak도 포함). 모듈이 다시 로드되면 기록이 비어 다음 speak 전까지 안 보인다.
+- 확인 못 한 것: 위험 Bash·민감 경로 정규식의 오탐·미탐, VS Code 표면에서의 동작(AbovePrompt는 터미널·데스크톱만).

@@ -7,6 +7,10 @@
     {
       "name": "decide",
       "source": "./mods/decide"
+    },
+    {
+      "name": "debrief-mod",
+      "source": "./mods/debrief-mod"
     }
   ],
   "metadata": {

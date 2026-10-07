@@ -7,6 +7,7 @@ Claude Code 플러그인(모드) 모음이다. 저장소 하나가 마켓플레�
 | 이름 | 설명 | 상세 |
 | --- | --- | --- |
 | `decide` | [decide](https://github.com/sparktype/decide)의 판정 상태를 패널, 상태 줄, 알림으로 보여주는 모드. `decide` 바이너리, MCP 서버(stdio), bash-risk 게이트 훅, 사용 스킬 3개를 함께 가진다 | [mods/decide](mods/decide/README.md) |
+| `debrief-mod` | [debrief](https://github.com/sparktype/debrief)(로컬 TTS)를 `/debrief` 커맨드, 프롬프트 위 상태 한 줄, 오류 토스트, speak 계약 가드, 브리핑 로그 Pane으로 다루는 모드 | [mods/debrief-mod](mods/debrief-mod/README.md) |
 
 ## 설치
 
@@ -14,6 +15,7 @@ Claude Code 터미널 세션의 프롬프트에서 입력한다.
 
 ```
 /plugin install decide --marketplace sparktype/claude-plugins
+/plugin install debrief-mod --marketplace sparktype/claude-plugins
 ```
 
 1. `Add marketplace?`에 `y`를 답한다. 마켓플레이스는 한 번만 추가되고 이후 설치는 질문이 없다.
@@ -30,7 +32,8 @@ Claude Code 터미널 세션의 프롬프트에서 입력한다.
 claude-plugins/
 ├── .claude-plugin/marketplace.json   마켓플레이스 정의, plugins 배열에 항목을 더한다
 ├── mods/
-│   └── decide/                       플러그인 하나 (plugin.json, hooks/, types/)
+│   ├── decide/                       플러그인 하나 (plugin.json, hooks/, types/)
+│   └── debrief-mod/                  debrief 제어·관찰 모드
 ├── scripts/update-binary.sh          릴리스 자산에서 decide 바이너리를 받아 검증하고 mods/decide/bin/에 넣는다
 └── docs/decide/                      플러그인별 체크리스트와 결정 기록
 ```

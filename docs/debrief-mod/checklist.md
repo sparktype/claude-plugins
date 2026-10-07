@@ -1,0 +1,11 @@
+# debrief-mod 체크리스트
+- [x] 1. /debrief 슬래시 커맨드 (status|doctor|log|mode|mute|companion|dnd)
+- [x] 2. 프롬프트 위 상태 한 줄 (15초 폴링 + 프롬프트 제출·커맨드 직후 갱신)
+- [x] 3. last-error.json 오류 토스트 (10초 폴링)
+- [x] 4. speak 계약 가드 (턴당 1회·240자·3문장 이하·목록 금지, subagent 예외)
+- [x] 5. 오너십 밴드 (수정 파일·위험 Bash·민감 경로)
+- [x] 6. 브리핑 로그 Pane (/debrief log)
+- [x] claude plugin validate 통과, claude plugin test 3건 통과
+- [x] 핫 리로드로 실제 세션에서 확인(speak 가드, 상태 줄 표시)
+- [x] 상태 표시를 박스에서 테두리 없는 한 줄로 변경, 목소리 이름 추가
+- [x] sparktype/claude-plugins에 공유용으로 정리
