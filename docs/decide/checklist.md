@@ -16,7 +16,7 @@
 - [x] 별도 저장소 폴더 구성 (`~/Develop/Workspaces/claude-plugins`, 모드는 `mods/decide/`)
 - [x] `marketplace.json`, README, `.gitignore`
 - [x] `claude plugin validate .`, `claude plugin test .` 통과
-- [ ] GitHub 저장소 생성 (`sparktype/claude-plugins`)과 push
+- [x] GitHub 저장소 생성 (`sparktype/claude-plugins`, 비공개)와 push
 - [ ] 라이선스 결정 (미정, 파일 없음)
 - [ ] 다른 세션에서 `/plugin install decide --marketplace sparktype/claude-plugins`로 설치 확인
 - [ ] 플러그인 이름 `decide`가 MCP 서버 `decide`와 겹치지 않는지 확인
