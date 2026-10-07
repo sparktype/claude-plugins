@@ -27,6 +27,8 @@
 - [x] 판정 밴드 매처에 `mcp__plugin_decide_decide__*` 추가
 - [x] `scripts/update-binary.sh`와 v0.7.0 자산으로 검증 시험
 - [x] README(루트, 모드) 갱신
-- [ ] decide 0.8.0 릴리스 뒤 `scripts/update-binary.sh v0.8.0`, `bin/decide` 커밋, plugin.json 버전 0.2.0
+- [x] decide 0.8.0 릴리스 뒤 `scripts/update-binary.sh v0.8.0`, `bin/decide` 커밋, plugin.json 버전 0.2.0
 - [ ] 푸시 후 `claude plugin update decide@sparktype-plugins`, user scope의 `decide` 등록 제거
-- [ ] (별도) 표시·게이트 훅과 `CLEF_WEIGHTS` 표시를 `DECIDE_LOCAL_URL` 기준으로
+- [x] 게이트 훅을 플러그인 hooks.json에 넣고 실제 실행 확인
+- [ ] (별도) 표시 훅은 decide가 플러그인 도구 이름을 받게 고친 뒤 넣을지 결정
+- [ ] (별도) 모드의 `CLEF_WEIGHTS`·`DECIDE_LOCAL_REPO` 표시를 `DECIDE_LOCAL_URL` 기준으로

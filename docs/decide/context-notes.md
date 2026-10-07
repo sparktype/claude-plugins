@@ -131,5 +131,17 @@
 - 바이너리는 아직 커밋하지 않았다. decide 0.8.0이 릴리스돼야 한다(local이 별도 서버 호출로 바뀌고 `decide mcp`가 데몬 없이 도는 버전).
   그 전에 푸시하면 `.mcp.json`이 가리키는 파일이 없어 MCP가 실패한다. 순서: decide 0.8.0 태그 → `scripts/update-binary.sh v0.8.0` → `bin/decide`
   커밋 → plugin.json 버전 올리기 → 푸시.
-- 한계. 표시·게이트 훅은 `decide install --claude`가 `/opt/homebrew/bin/decide`로 등록한다(DECIDE_BIN 고정). 플러그인 캐시 경로는 버전마다
-  달라 그 자리를 못 쓴다. 훅까지 플러그인이 갖게 하려면 hooks.json에 훅을 넣는 별도 작업이 필요하다.
+
+
+## 2026-10-07 훅도 플러그인에 넣는다, 릴리스
+
+- decide v0.8.0을 릴리스했다(태그 푸시로 CI가 자산 생성, 성공). `scripts/update-binary.sh v0.8.0`이 sha256 검증을 통과해 `bin/decide`에 넣었다.
+- 게이트 훅: `hooks/hooks.json`에 `modules`와 표준 `hooks`를 한 파일에 같이 둔다. `claude plugin validate`가 통과했고, `--plugin-dir`에
+  `--setting-sources project`(사용자 설정의 훅 제외)로 Bash를 한 번 시켜 `gate.log`에 새 줄(사전 필터 `echo hi`) 하나가 생기는 것으로
+  플러그인 훅이 실제로 돈 것을 확인했다. 명령은 `${CLAUDE_PLUGIN_ROOT}/bin/decide gate bash-risk`, 이벤트 PreToolUse, matcher Bash, 10초.
+- 표시 훅(`decide hook`)은 넣지 않았다. 판정 밴드가 같은 내용을 이미 보여 주고, `show.rs`가 도구 이름을 `mcp__decide__decide` 하나로
+  비교해서 플러그인 이름(`mcp__plugin_decide_decide__decide`)에는 출력하지 않는다. 넣으려면 decide에서 두 이름을 받게 고치고 패치 릴리스가 필요하다.
+- 중복 위험: `decide install --claude`의 훅과 플러그인 훅이 같이 있으면 게이트가 두 번 판정한다. 버전이 다른 `decide`(brew 0.7.0 대 플러그인
+  0.8.0)가 같은 데몬 소켓을 쓰면 `client_version` 불일치로 데몬이 매번 교체된다. README에 지울 항목과 `brew upgrade`를 적었다.
+- 시험 부작용: 위 시험으로 0.8.0 게이트 클라이언트가 떠 있던 0.7.0 데몬에 접속해 데몬이 교체됐을 수 있다(자동 복구 설계). 그 데몬이
+  내던 HTTP MCP(:48080)도 같이 사라졌다.

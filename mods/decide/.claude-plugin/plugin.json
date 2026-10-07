@@ -1,7 +1,7 @@
 {
   "name": "decide",
-  "version": "0.1.0",
-  "description": "decide의 판정 결과, 게이트 판정, 백엔드 상태를 Claude Code 안에서 보여주는 읽기 전용 모드",
+  "version": "0.2.0",
+  "description": "decide의 MCP 서버, bash-risk 게이트 훅, 판정·게이트·백엔드 상태 화면을 한 번에 설치하는 플러그인(decide 바이너리 포함)",
   "author": { "name": "SangSun Park" },
   "license": "MIT",
   "types": "./types/index.d.ts"
