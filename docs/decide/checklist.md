@@ -20,3 +20,13 @@
 - [ ] 라이선스 결정 (미정, 파일 없음)
 - [ ] 다른 세션에서 `/plugin install decide --marketplace sparktype/claude-plugins`로 설치 확인
 - [ ] 플러그인 이름 `decide`가 MCP 서버 `decide`와 겹치지 않는지 확인
+
+## MCP 서버와 바이너리 묶기 (2026-10-07)
+
+- [x] `.mcp.json`(`${CLAUDE_PLUGIN_ROOT}/bin/decide mcp`)과 연결·도구 이름 확인
+- [x] 판정 밴드 매처에 `mcp__plugin_decide_decide__*` 추가
+- [x] `scripts/update-binary.sh`와 v0.7.0 자산으로 검증 시험
+- [x] README(루트, 모드) 갱신
+- [ ] decide 0.8.0 릴리스 뒤 `scripts/update-binary.sh v0.8.0`, `bin/decide` 커밋, plugin.json 버전 0.2.0
+- [ ] 푸시 후 `claude plugin update decide@sparktype-plugins`, user scope의 `decide` 등록 제거
+- [ ] (별도) 표시·게이트 훅과 `CLEF_WEIGHTS` 표시를 `DECIDE_LOCAL_URL` 기준으로

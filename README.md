@@ -6,7 +6,7 @@ Claude Code 플러그인(모드) 모음이다. 저장소 하나가 마켓플레�
 
 | 이름 | 설명 | 상세 |
 | --- | --- | --- |
-| `decide` | [decide](https://github.com/sparktype/decide)의 판정 상태를 패널, 상태 줄, 알림으로 보여주는 읽기 전용 모드 | [mods/decide](mods/decide/README.md) |
+| `decide` | [decide](https://github.com/sparktype/decide)의 판정 상태를 패널, 상태 줄, 알림으로 보여주는 모드. `decide` 바이너리와 MCP 서버(stdio)를 함께 가진다 | [mods/decide](mods/decide/README.md) |
 
 ## 설치
 
@@ -31,6 +31,7 @@ claude-plugins/
 ├── .claude-plugin/marketplace.json   마켓플레이스 정의, plugins 배열에 항목을 더한다
 ├── mods/
 │   └── decide/                       플러그인 하나 (plugin.json, hooks/, types/)
+├── scripts/update-binary.sh          릴리스 자산에서 decide 바이너리를 받아 검증하고 mods/decide/bin/에 넣는다
 └── docs/decide/                      플러그인별 체크리스트와 결정 기록
 ```
 

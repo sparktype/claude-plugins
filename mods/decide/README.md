@@ -6,10 +6,12 @@
 - **상태 줄.** 백엔드와 모델, 마지막 지연, 데몬 생존 여부를 한 줄로 보여준다.
 - **게이트 알림.** Bash 명령이 ask나 deny로 판정되면 토스트와 프롬프트 위 밴드(색 있는 ●, 10초)로 알린다.
 - **판정 밴드.** `decide`, `decide_many` 도구 결과를 프롬프트 위에 보여준다.
+- **MCP 서버.** `decide`, `decide_many` 도구를 가진 stdio MCP 서버(`bin/decide mcp`)를 플러그인이 함께 등록한다. 서버 이름은 `plugin:decide:decide`, 도구 이름은 `mcp__plugin_decide_decide__decide`, `mcp__plugin_decide_decide__decide_many`다.
 
 ## 요구 사항
 
-- Apple Silicon macOS에 `brew install sparktype/tap/decide`로 설치한 `decide` (데몬 경로 `/opt/homebrew/bin/decide`).
+- Apple Silicon macOS. 플러그인에 든 `bin/decide`가 arm64 바이너리뿐이다.
+- 바이너리는 플러그인이 갖고 있어 MCP 서버를 쓰는 데는 따로 설치할 것이 없다. 다만 표시·게이트 훅(`decide install --claude`)은 아직 `/opt/homebrew/bin/decide`를 가리키므로 훅까지 쓰려면 `brew install sparktype/tap/decide`가 필요하다.
 - Claude Code 터미널 세션. 데스크톱 앱의 Code 탭에서는 설치 명령을 쓸 수 없다.
 - 모드가 `~/.cache/decide/gate.log`와 `~/.cache/decide/decide.sock`을 읽고 `pgrep`, `ps`, `sh`를 부른다. 다른 경로나 OS에서는 상태가 비어 보인다.
 
@@ -20,6 +22,10 @@
 ```
 
 `Add marketplace?`에 `y`를 답하고 범위(user 권장)를 고른다. 설치 직후부터 이 세션에서 동작한다.
+
+이미 `decide install`로 MCP를 등록했다면 같은 도구가 두 벌(`mcp__decide__*`와 `mcp__plugin_decide_decide__*`) 보이므로 `claude mcp remove -s user decide`로 하나를 지운다. 밴드는 두 이름을 모두 처리한다.
+
+플러그인에 든 바이너리는 `scripts/update-binary.sh <태그>`로 갱신한다(릴리스 자산을 받아 sha256을 검증하고 `bin/decide`에 넣는다).
 
 ## 읽는 것과 읽지 않는 것
 
