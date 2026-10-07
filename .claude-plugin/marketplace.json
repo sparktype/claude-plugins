@@ -1,0 +1,15 @@
+{
+  "name": "decide-tools",
+  "owner": {
+    "name": "SangSun Park"
+  },
+  "plugins": [
+    {
+      "name": "decide",
+      "source": "./"
+    }
+  ],
+  "metadata": {
+    "description": "decide의 판정 결과와 게이트 상태를 Claude Code 안에서 보여주는 모드"
+  }
+}
