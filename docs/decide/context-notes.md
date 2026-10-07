@@ -145,3 +145,17 @@
   0.8.0)가 같은 데몬 소켓을 쓰면 `client_version` 불일치로 데몬이 매번 교체된다. README에 지울 항목과 `brew upgrade`를 적었다.
 - 시험 부작용: 위 시험으로 0.8.0 게이트 클라이언트가 떠 있던 0.7.0 데몬에 접속해 데몬이 교체됐을 수 있다(자동 복구 설계). 그 데몬이
   내던 HTTP MCP(:48080)도 같이 사라졌다.
+
+## 2026-10-07 스킬 3개
+
+- 사용자가 "모두 스킬 작성"을 골라 `decide`(사용 가이드와 `recipes.md`), `decide-doctor`(진단과 `diagnose.sh`), `decide-gate-review`를 만들었다.
+  후보 중 보정 확인(스크립트가 필요), 서버 운영(서버는 decide가 띄우지 않는다는 결정과 충돌), Stop 훅(스킬이 아님)은 만들지 않았다.
+- 설명(description)은 트리거 조건만 쓴다(스킬 작성 가이드: 워크플로 요약을 넣으면 모델이 본문 대신 설명을 따른다). 한국어 키워드를 덧붙였다.
+- 시험(`claude -p --plugin-dir`, `--allowedTools Skill`, 사용자 설정 제외): 목록에 `decide:decide`, `decide:decide-doctor`,
+  `decide:decide-gate-review`가 보인다. 문의 분류 요청은 처음 설명("Use when a judgment must come back as a fixed answer...")에서는
+  모델이 스킬을 건너뛰고 `decide_many`를 곧바로 불렀다. 설명을 "Use before calling the decide or decide_many MCP tools, and whenever..."로 바꾸자
+  3번 모두 스킬을 먼저 읽었다. 연결 실패 요청은 doctor, 게이트 오탐 요청은 gate-review가 불렸고 무관한 요청(피보나치)은 아무것도 불리지 않았다.
+- 한계. 서브에이전트로 스킬 없는 기준선을 재는 압력 시험은 하지 않았다. 호출 여부와 점검 스크립트의 실제 출력만 확인했고, 스킬을 읽은 뒤
+  모델이 질문을 더 잘 쓰는지는 재지 않았다.
+- `diagnose.sh`는 실제 환경에서 돌려 두 번 고쳤다. MCP 목록의 들여쓴 부가 줄(위치, 경고)을 서버로 세어 개수가 부풀던 것과, 옛 데몬이 남아
+  프로세스가 둘인 상황을 안내하지 않던 것이다. 돌려 본 환경에서 `decide` 저장소의 `.mcp.json`이 플러그인과 도구를 두 벌로 만드는 것도 잡았다.

@@ -32,3 +32,10 @@
 - [x] 게이트 훅을 플러그인 hooks.json에 넣고 실제 실행 확인
 - [ ] (별도) 표시 훅은 decide가 플러그인 도구 이름을 받게 고친 뒤 넣을지 결정
 - [ ] (별도) 모드의 `CLEF_WEIGHTS`·`DECIDE_LOCAL_REPO` 표시를 `DECIDE_LOCAL_URL` 기준으로
+
+## 스킬 (2026-10-07)
+
+- [x] `decide`, `decide-doctor`, `decide-gate-review` 작성, 플러그인 0.3.0
+- [x] 목록 노출과 호출 시험(찾기 4건, 무관 요청 1건)
+- [ ] (별도) 압력 시험으로 스킬을 읽은 뒤 질문 품질이 나아지는지 재기
+- [ ] (별도) `decide` 저장소 `.mcp.json`의 `decide` 항목 제거 여부(플러그인과 도구가 두 벌)

@@ -9,6 +9,14 @@
 - **bash-risk 게이트 훅.** Bash 명령을 실행하기 전에 `bin/decide gate bash-risk`(PreToolUse, 10초)로 위험을 판정한다. 정적 규칙이 명백한 위험을 먼저 잡고 나머지는 모델이 판정한다. 기본이 감사 모드라 막지 않고 알리기만 한다(설정은 `decide gate --show`).
 - **MCP 서버.** `decide`, `decide_many` 도구를 가진 stdio MCP 서버(`bin/decide mcp`)를 플러그인이 함께 등록한다. 서버 이름은 `plugin:decide:decide`, 도구 이름은 `mcp__plugin_decide_decide__decide`, `mcp__plugin_decide_decide__decide_many`다.
 
+## 스킬
+
+| 스킬 | 언제 켜지나 | 하는 일 |
+| --- | --- | --- |
+| `decide:decide` | `decide`, `decide_many`를 부르기 전, 선택·점수·확률로 고정되는 판단이 필요할 때 | 도구 인자, 질문 쓰는 법, 결과 읽기와 임계값, 실패 처리. 상황별 질문 묶음은 `recipes.md` |
+| `decide:decide-doctor` | 도구가 안 보이거나 연결 실패, 백엔드가 뜻과 다름, 게이트 이중 판정 | `diagnose.sh`(읽기 전용)로 백엔드, 로컬 서버, MCP·훅 등록, 버전, 데몬을 한 번에 점검하고 증상별로 고치는 법 |
+| `decide:decide-gate-review` | 게이트의 오탐·누락, enforce 전환, 규칙·임계값 조정을 검토할 때 | `gate stats`와 `gate.log`를 읽어 사례를 분류하고 고칠 곳을 제안(적용은 확인 뒤) |
+
 ## 요구 사항
 
 - Apple Silicon macOS. 플러그인에 든 `bin/decide`가 arm64 바이너리뿐이다.
