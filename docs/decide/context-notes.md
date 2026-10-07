@@ -108,3 +108,7 @@
 - 모드를 `decide` 저장소가 아닌 별도 저장소 `decide-view`로 배포한다. `decide`의 Rust 릴리스와 버전을 맞출 필요가 없고, 모드는 `gate.log`와 CLI 출력만 읽어 `decide` 코드와 결합하지 않기 때문이다.
 - 마켓플레이스 이름은 `decide-tools`, 플러그인 이름은 `decide`(토스트 제목을 `decide`로 하려는 요구)다. `.claude-plugin/types/`는 엔진이 로드할 때 다시 쓰므로 커밋하지 않는다.
 - 이 폴더가 앞으로 원본이다. 세션 폴더(`~/.claude/dev-mods/<세션id>/decide/`)는 핫리로딩 확인용 사본이다.
+
+## 2026-10-07 여러 모드를 담는 구조로
+- 저장소 이름을 `decide-view`에서 `decide-tools`로, 모드 위치를 저장소 루트에서 `mods/decide/`로 바꿨다. 마켓플레이스 항목의 `source`는 `./mods/decide`다. 앞으로 모드가 늘어도 설치 명령의 저장소 이름은 그대로이고 마켓플레이스 파일에 항목만 더한다. 임시 폴더에서 `source`가 서로 다른 항목 두 개를 `claude plugin validate`로 확인했다. 설치는 시험하지 않았다.
+- 모드 문서(`checklist.md`, `context-notes.md`)는 저장소 루트 `docs/decide/`로 옮겼다. 이 파일 앞부분의 `decide-view`는 이전 이름이다.

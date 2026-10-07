@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "decide",
-      "source": "./"
+      "source": "./mods/decide"
     }
   ],
   "metadata": {
