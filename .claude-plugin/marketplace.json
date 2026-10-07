@@ -1,5 +1,5 @@
 {
-  "name": "decide-tools",
+  "name": "sparktype-plugins",
   "owner": {
     "name": "SangSun Park"
   },
@@ -10,6 +10,6 @@
     }
   ],
   "metadata": {
-    "description": "decide의 판정 결과와 게이트 상태를 Claude Code 안에서 보여주는 모드"
+    "description": "sparktype의 Claude Code 플러그인 모음"
   }
 }

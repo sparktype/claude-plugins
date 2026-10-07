@@ -112,3 +112,7 @@
 ## 2026-10-07 여러 모드를 담는 구조로
 - 저장소 이름을 `decide-view`에서 `decide-tools`로, 모드 위치를 저장소 루트에서 `mods/decide/`로 바꿨다. 마켓플레이스 항목의 `source`는 `./mods/decide`다. 앞으로 모드가 늘어도 설치 명령의 저장소 이름은 그대로이고 마켓플레이스 파일에 항목만 더한다. 임시 폴더에서 `source`가 서로 다른 항목 두 개를 `claude plugin validate`로 확인했다. 설치는 시험하지 않았다.
 - 모드 문서(`checklist.md`, `context-notes.md`)는 저장소 루트 `docs/decide/`로 옮겼다. 이 파일 앞부분의 `decide-view`는 이전 이름이다.
+
+## 2026-10-07 저장소 이름을 claude-plugins로
+- 저장소 이름을 `decide-tools`에서 `sparktype/claude-plugins`로 정했다. `decide` 전용이 아니라 이후 다른 모드도 담는 마켓플레이스라서 일반 이름을 쓴다. 마켓플레이스 이름은 `claude-plugins`로 하면 검증이 "공식 Anthropic/Claude 마켓플레이스를 사칭한다"며 거절해서 `sparktype-plugins`로 했다. 플러그인 이름은 `decide` 그대로다. 설치 명령은 `/plugin install decide --marketplace sparktype/claude-plugins`다.
+- 공개 범위는 지정받지 못해 비공개(private)로 만들었다. 공개로 바꾸기 전에 라이선스(파일 없음)와 `plugin.json`의 author를 정해야 한다.

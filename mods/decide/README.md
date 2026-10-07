@@ -16,7 +16,7 @@
 ## 설치
 
 ```
-/plugin install decide --marketplace sparktype/decide-tools
+/plugin install decide --marketplace sparktype/claude-plugins
 ```
 
 `Add marketplace?`에 `y`를 답하고 범위(user 권장)를 고른다. 설치 직후부터 이 세션에서 동작한다.
