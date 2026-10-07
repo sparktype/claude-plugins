@@ -5,7 +5,7 @@ description: Use when debrief hook notices are too frequent, never arrive, or th
 
 # debrief 훅 알림
 
-에이전트가 스스로 말할 수 없는 순간에 debrief가 **고정 문구**로 알린다. 텍스트를 생성하지 않고 코드에 박힌 경어체 문구를 `lane=work`로 보낸다. 그래서 `debrief companion off`로는 꺼지지 않고 `debrief mute on`으로만 꺼진다.
+에이전트가 스스로 말할 수 없는 순간에 debrief가 **고정 문구**로 알린다. 텍스트를 생성하지 않고 코드에 박힌 경어체 문구를 `lane=work`로 보낸다. 그래서 `debrief companion off`로는 꺼지지 않고 `debrief mute on`으로만 꺼진다. 모드로도 끌 수 없다. 알림은 `priority=main`이라 `focus`·`quiet`·`night`에서도 재생되고, 모드의 볼륨 상한(`quiet` 0.45, `night` 0.20)만 적용된다.
 
 ## 알림 종류
 

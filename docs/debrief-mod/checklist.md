@@ -10,4 +10,4 @@
 - [x] 상태 표시를 박스에서 테두리 없는 한 줄로 변경, 목소리 이름 추가
 - [x] sparktype/claude-plugins에 공유용으로 정리
 - [x] 스킬 5개 추가(0.2.0): debrief-doctor, debrief-tune, debrief-ownership, debrief-voices, debrief-hooks
-- [ ] 설정 키·모드 효과를 실제 코드(ModePolicy, 설정 로더)와 한 번 더 대조
+- [x] 설정 키·모드 효과를 실제 코드(ModePolicy, 설정 로더, hook_engine)와 대조하고 스킬을 정정

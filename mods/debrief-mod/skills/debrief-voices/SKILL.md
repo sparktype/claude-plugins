@@ -24,7 +24,7 @@ description: Use when choosing or explaining debrief speak arguments - which voi
 
 - **companion lane**의 목소리는 세션마다 F1부터 M5까지 돌아간다. 같은 `session`을 넘기면 같은 목소리를 유지하고, 열 개를 넘기면 처음부터 다시 쓴다. `session`을 빼면 그 MCP 프로세스가 받은 목소리를 쓴다.
 - **work lane**은 역할표를 쓴다. 서브에이전트는 `agent_type`에 따라 목소리가 정해지고, 등록되지 않은 유형은 `F1`이다.
-- 설정의 `categoryVoices`가 비어 있지 않으면 거기 적힌 역할 목소리가 우선한다.
+- 설정의 `categoryVoices`와 `voiceSpeeds`는 지금 재생 코드가 읽지 않아 효과가 없다. 역할 목소리는 코드의 고정 표를 따른다.
 
 ## lane
 
@@ -63,7 +63,7 @@ description: Use when choosing or explaining debrief speak arguments - which voi
 | `volume` | 0.0–1.0 (모드의 볼륨 상한이 한 번 더 깎는다) |
 | `text` | 800자 이하 |
 
-숫자는 문자열로 와도 받는다(`"0.9"`). 볼륨은 모드의 상한으로 깎인다. 범위를 벗어난 값을 어떻게 처리하는지는 확인하지 못했으니 항상 범위 안에서 쓴다.
+숫자는 문자열로 와도 받는다(`"0.9"`). 볼륨은 0.0–1.0으로 보정한 뒤 모드의 상한으로 한 번 더 깎인다(유한하지 않은 값은 조용히 버려진다). `speed`와 `text` 범위를 벗어난 입력의 처리는 확인하지 못했으니 항상 범위 안에서 쓴다.
 
 ## 화면의 목소리 이름
 

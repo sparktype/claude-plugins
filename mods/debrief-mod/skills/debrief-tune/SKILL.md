@@ -27,6 +27,8 @@ cat "$HOME/Library/Application Support/debrief/config.json"
 
 ## 모드
 
+모드 규칙은 `mode_policy.rs` 기준이다. 서브에이전트 억제는 `priority=subagent`에만 적용되고, 볼륨 상한은 lane과 상관없이 모든 발화(훅 알림 포함)에 적용된다.
+
 | 모드 | 볼륨 상한 | 서브에이전트 |
 | --- | --- | --- |
 | `normal` | 1.0 | 재생 |
@@ -47,9 +49,8 @@ cat "$HOME/Library/Application Support/debrief/config.json"
 | `sessionLabel` | true | 다른 프로젝트 세션이 30분 안에 활성이면 발화 앞에 `"<프로젝트>. "`를 붙인다 |
 | `teamNotices` | false | 에이전트 팀의 TeammateIdle·TaskCompleted 알림. 잦아서 기본 꺼짐 |
 | `decideEnabled` | true | `decide` 판단 모델 보강(침묵 판단, 감정 선택). 불가하면 자동으로 기존 동작 |
-| `volumeCeilings` | 위 모드표 | 모드별 볼륨 상한(0.0–1.0). CLI로는 못 바꾼다 |
-| `categoryVoices` | `{}` | 역할 이름 → 목소리(`F1`–`M5`). 비면 역할 기본값 |
-| `voiceSpeeds` | `{}` | 역할 이름 → 속도(0.7–2.0). 비면 요청의 `speed` |
+| `volumeCeilings` | 위 모드표 | 모드별 볼륨 상한(0.0–1.0으로 보정). 모드 키를 빼면 기본값, 그것도 없으면 1.0. CLI로는 못 바꾼다 |
+| `categoryVoices` · `voiceSpeeds` | `{}` | **지금은 효과가 없다.** 파일에는 저장되지만 재생 코드가 읽지 않는다(2026-10-07 코드 확인). 역할 목소리는 코드의 고정 표를 쓴다 |
 
 고치는 순서는 백업, 수정, 검증이다. 한 키만 바꿀 때 예시다.
 
@@ -59,7 +60,7 @@ cp "$C" "$C.bak"
 jq '.longTurnSeconds = 120' "$C.bak" > "$C" && jq . "$C" >/dev/null && echo ok
 ```
 
-JSON이 깨지면 그 발화는 **기본값(모드 normal, 음소거 꺼짐, 도우미 켜짐)으로 재생**된다. 즉 조용히 해 둔 설정이 풀려 갑자기 큰 소리가 날 수 있다. 수정 직후 `jq .`로 파싱을 확인하고, 실패하면 `.bak`로 되돌린다.
+파일을 읽거나 파싱하지 못하면 **설정 전체가 기본값(모드 normal, 음소거 꺼짐, 도우미 켜짐)** 이 된다. JSON 문법 오류뿐 아니라 키 하나의 타입이 틀려도(`"longTurnSeconds": "120"`처럼 숫자 자리에 문자열) 같다. 조용히 해 둔 설정이 풀려 갑자기 큰 소리가 날 수 있다. 수정 직후 `jq .`로 파싱을 확인하고, 타입도 위 표대로인지 본다. 실패하면 `.bak`로 되돌린다.
 
 ## 증상별 처방
 
@@ -70,7 +71,11 @@ JSON이 깨지면 그 발화는 **기본값(모드 normal, 음소거 꺼짐, 도
 | 긴 작업 알림이 거슬린다 | `longTurnSeconds`를 늘리거나 `0` |
 | 어느 세션인지 모르겠다 | `sessionLabel`이 true인지 확인(여러 프로젝트 세션이 동시에 활성일 때만 붙는다) |
 | 권한 요청·입력 대기 알림도 끄고 싶다 | 이 알림은 `lane=work`라 `companion off`로 안 꺼진다. `mute on`만 끈다 |
-| 특정 역할 목소리를 바꾸고 싶다 | `categoryVoices`에 `{"reviewer": "F3"}` 식으로 넣는다 |
+| 특정 역할 목소리를 바꾸고 싶다 | 설정으로는 못 바꾼다(`categoryVoices`가 아직 연결되지 않았다). 코드의 역할표(`voice_catalog.rs`)를 고쳐야 한다 |
+
+## CLI가 파일에 하는 일
+
+`mute`, `mode`, `companion`, `dnd`는 설정을 읽어 구조체로 만든 뒤 **파일 전체를 다시 쓴다**. 그래서 표에 없는 키는 사라지고, 파일이 파싱되지 않는 상태에서 실행하면 기본값을 읽어 그 값으로 파일을 덮어쓴다. 설정 파일을 직접 고치다 깨졌다면 CLI를 쓰기 전에 먼저 복구한다.
 
 ## 하지 않는 것
 

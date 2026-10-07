@@ -14,3 +14,5 @@
 - `debrief-tune`이 다루는 설정 키는 configuration.rs의 camelCase 필드명이다. README의 설정 표에는 없는 키(longTurnSeconds, sessionLabel, dndSync, teamNotices, decideEnabled)가 있어 코드를 기준으로 했다.
 - 확인 못 한 것: 범위 밖 speed·text 입력의 처리(검증 거절인지 보정인지), 훅 알림 설계 문서의 미검증 필드명(notification_type, error_type), 모드별 억제를 ModePolicy 코드로 직접 대조하는 일은 README 표에 의존했다.
 - 직접 인자 없는 `debrief mute|companion|dnd`는 토글이라 skill 전체에서 on/off 명시를 강조했다(세션 중 실제 사고가 있었다).
+- 2026-10-07 코드 대조 결과: 모드표(mode_policy.rs)·쿨다운 300/120초·`longTurnSeconds` 0=끔·`teamNotices`는 맞았다. 틀렸던 것은 둘이다. (1) `categoryVoices`·`voiceSpeeds`는 configuration.rs 밖에서 읽지 않아 효과가 없다(debrief README의 설정 표는 이를 지원하는 것처럼 적혀 있어 어긋난다). (2) 설정은 키 하나의 타입이 틀려도 전체가 기본값으로 떨어지고, CLI(mode 등)는 파일 전체를 다시 써서 모르는 키를 지우며 깨진 파일은 기본값으로 덮어쓴다.
+- debrief 본체의 README 정정이나 두 키의 연결은 이 작업 범위가 아니라 하지 않았다. 결정이 필요하다.
