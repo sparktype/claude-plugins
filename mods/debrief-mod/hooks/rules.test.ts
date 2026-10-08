@@ -1,7 +1,7 @@
 // rules.ts 순수 함수의 동작을 검증하는 테스트
 import { expect, test } from 'claude-code/testing'
 
-import { isRiskyBash, isSensitivePath, parseCommand, speakViolation, statusLine, voiceLabel } from './rules'
+import { isRiskyBash, isSensitivePath, parseCommand, parseLastQuestion, speakViolation, statusLine, voiceLabel } from './rules'
 
 test('speak 계약', () => {
   expect(speakViolation('바뀐 점입니다. 다음 행동입니다.')).toBeUndefined()
@@ -28,4 +28,23 @@ test('상태바와 위험 분류', () => {
   expect(isRiskyBash('cargo test')).toBe(false)
   expect(isSensitivePath('/a/.env')).toBe(true)
   expect(isSensitivePath('/a/src/main.rs')).toBe(false)
+})
+
+test('AskUserQuestion 결과에서 마지막 질문과 답을 뽑는다', () => {
+  expect(
+    parseLastQuestion({
+      questions: [{ question: '어디에 저장할까요?' }],
+      answers: { '어디에 저장할까요?': '건너뜀' },
+    })
+  ).toEqual({ question: '어디에 저장할까요?', answer: '건너뜀' })
+
+  expect(
+    parseLastQuestion({
+      questions: [{ question: '첫 번째' }, { question: '두 번째' }],
+      answers: { '첫 번째': '답1', '두 번째': '답2' },
+    })
+  ).toEqual({ question: '두 번째', answer: '답2' })
+
+  expect(parseLastQuestion({})).toBeUndefined()
+  expect(parseLastQuestion({ questions: [{ question: '질문' }], answers: {} })).toBeUndefined()
 })

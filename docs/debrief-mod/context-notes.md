@@ -16,3 +16,5 @@
 - 직접 인자 없는 `debrief mute|companion|dnd`는 토글이라 skill 전체에서 on/off 명시를 강조했다(세션 중 실제 사고가 있었다).
 - 2026-10-07 코드 대조 결과: 모드표(mode_policy.rs)·쿨다운 300/120초·`longTurnSeconds` 0=끔·`teamNotices`는 맞았다. 틀렸던 것은 둘이다. (1) `categoryVoices`·`voiceSpeeds`는 configuration.rs 밖에서 읽지 않아 효과가 없다(debrief README의 설정 표는 이를 지원하는 것처럼 적혀 있어 어긋난다). (2) 설정은 키 하나의 타입이 틀려도 전체가 기본값으로 떨어지고, CLI(mode 등)는 파일 전체를 다시 써서 모르는 키를 지우며 깨진 파일은 기본값으로 덮어쓴다.
 - debrief 본체의 README 정정이나 두 키의 연결은 이 작업 범위가 아니라 하지 않았다. 결정이 필요하다.
+- 2026-10-08 마지막 AskUserQuestion 질문·답 요약 추가. `tool.call{tool:'AskUserQuestion'}` 훅에서 `next(e)`의 `result`(ToolCallResult.result, 즉 AskUserQuestionOutput — `questions[].question`과 `answers` 맵)를 읽는다. `ran.text`가 아니다: `text`는 모델이 읽는 평문 요약이고, decide 모드가 `ran.text`를 JSON.parse하는 건 decide MCP 도구가 텍스트로 답하기 때문이지 일반 패턴이 아니다. AskUserQuestion은 빌트인 툴이라 `result`가 바로 구조화된 객체로 온다.
+- 여러 질문 중 어느 걸 보여줄지: 배열의 마지막 질문(`questions.at(-1)`)과 그 질문 텍스트로 `answers`를 찾은 값. `AbovePrompt`의 `AskUserQuestion` RenderComponent는 다이얼로그가 열려 있는 동안의 입력만 보여주고 사용자 응답을 들고 있지 않아 쓸 수 없다 — `tool.call`의 리턴값에서만 응답을 얻을 수 있다.

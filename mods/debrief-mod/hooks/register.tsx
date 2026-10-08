@@ -3,7 +3,7 @@ import { atom, read, update } from 'claude-code'
 import type { Register } from 'claude-code'
 
 import type { Brief, Ownership } from '../types'
-import { isRiskyBash, isSensitivePath, parseCommand, speakViolation, statusLine, voiceLabel } from './rules'
+import { isRiskyBash, isSensitivePath, parseCommand, parseLastQuestion, speakViolation, statusLine, voiceLabel } from './rules'
 
 const SPEAK = 'mcp__debrief__speak'
 const PANE = 'debrief-log'
@@ -13,6 +13,7 @@ const briefs = atom({ plugin: 'debrief-mod', key: 'briefs' } as const, [])
 const ownership = atom({ plugin: 'debrief-mod', key: 'ownership' } as const, null)
 const status = atom({ plugin: 'debrief-mod', key: 'status' } as const, null)
 const isHidden = atom({ plugin: 'debrief-mod', key: 'isHidden' } as const, false)
+const lastQuestion = atom({ plugin: 'debrief-mod', key: 'lastQuestion' } as const, null)
 
 export const register: Register = on => {
   // ponytail: 모듈 변수라 핫 리로드 때 초기화됨. 세션 걸쳐 유지가 필요하면 $.state로 이전.
@@ -136,6 +137,15 @@ export const register: Register = on => {
     return next(e)
   })
 
+  // 마지막 AskUserQuestion: 질문과 사용자가 고른 답을 저장해 프롬프트 위에 보여준다.
+  on('tool.call', { tool: 'AskUserQuestion' }, async ($, e, next) => {
+    const ran = await next(e)
+    const parsed = ran.deny === undefined && !ran.isError ? parseLastQuestion(ran.result as Record<string, unknown>) : undefined
+    if (parsed) await update($, lastQuestion, () => parsed)
+
+    return ran
+  })
+
   on('turn.complete', async ($, e, next) => {
     if (files.size + risky.length > 0) {
       const summary: Ownership = { files: files.size, risky: [...risky], sensitive: [...sensitive] }
@@ -154,6 +164,7 @@ export const register: Register = on => {
     const lastVoice = (await read($, briefs)).at(-1)?.voice
     const summary = await read($, ownership)
     const isShown = summary !== null && !(await read($, isHidden))
+    const question = await read($, lastQuestion)
     const { Box, Button, Text } = $.ui.resolve(e)
     const parts: string[] = []
     if (isShown) {
@@ -165,6 +176,7 @@ export const register: Register = on => {
     return (
       <Box paddingX={1} gap={2}>
         <Text>{lastVoice ? `${line} · ${voiceLabel(lastVoice)}` : line}</Text>
+        {question && <Text dimColor>질문: {question.question} → {question.answer}</Text>}
         {isShown && <Text dimColor>직접 확인: {parts.join(' · ')}</Text>}
         {isShown && <Button key="hide" label="숨김" onPress={() => update($, isHidden, () => true)} />}
       </Box>

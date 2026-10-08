@@ -9,6 +9,8 @@ export type Brief = {
 
 export type Ownership = { files: number; risky: string[]; sensitive: string[] }
 
+export type LastQuestion = { question: string; answer: string }
+
 declare module 'claude-code' {
   interface PluginState {
     'debrief-mod': {
@@ -16,6 +18,7 @@ declare module 'claude-code' {
       ownership: Ownership | null
       status: string | null
       isHidden: boolean
+      lastQuestion: LastQuestion | null
     }
   }
 }

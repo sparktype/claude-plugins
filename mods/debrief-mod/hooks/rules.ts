@@ -36,6 +36,18 @@ export function statusLine(out: string): string {
   return `${muted ? '🔇' : '🔊'} ${pick('모드') ?? '?'}${companionOff ? ' · 도우미 꺼짐' : ''}`
 }
 
+// AskUserQuestion 결과에서 마지막 질문과 사용자가 고른 답을 뽑는다. 여러 질문 중 배열의 마지막 항목을 쓴다.
+export function parseLastQuestion(output: {
+  questions?: { question?: string }[]
+  answers?: Record<string, string>
+}): { question: string; answer: string } | undefined {
+  const last = output.questions?.at(-1)
+  if (!last?.question) return undefined
+  const answer = output.answers?.[last.question]
+  if (answer === undefined) return undefined
+  return { question: last.question, answer }
+}
+
 export type Parsed =
   | { argv: string[] }
   | { open: 'log' }
