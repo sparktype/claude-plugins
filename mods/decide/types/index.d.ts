@@ -21,7 +21,7 @@ export type Route = {
   isDaemonUp: boolean
 }
 
-export type Alert = { ts: number; text: string; color: string }
+export type Alert = { ts: number; text: string; color: string; command: string }
 
 export type Decision = {
   backend: string
@@ -36,11 +36,8 @@ declare module 'claude-code' {
     decide: {
       gate: Gate | null
       isDaemonUp: boolean
-      decision: Decision | null
-      isHidden: boolean
       stats: string
       route: Route | null
-      alert: Alert | null
     }
   }
 }

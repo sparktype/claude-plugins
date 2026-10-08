@@ -16,7 +16,7 @@ test('게이트 로그 한 줄을 읽는다', () => {
 
 test('ask와 deny만 알림이 되고 색이 다르다', () => {
   const ask = parseGate(ASK)!
-  expect(gateAlert(ask)).toEqual({ ts: 1, text: 'gate ask · 65%', color: '#e5b567' })
+  expect(gateAlert(ask)).toEqual({ ts: 1, text: 'gate ask · 65%', color: '#e5b567', command: 'rm -rf build' })
   expect(gateAlert({ ...ask, verdict: 'allow' })).toBe(undefined)
   const deny = gateAlert({ ...ask, verdict: 'deny', rule: 'grep *.env *' })
   expect(deny?.text).toBe('gate deny · rule grep *.env *')

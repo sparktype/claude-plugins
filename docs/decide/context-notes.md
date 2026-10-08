@@ -172,3 +172,5 @@
   테스트 환경은 `node:` 모듈을 못 써서(`a hooks module imports its own files by relative path and "claude-code", nothing else`) 같은 버그가 다시 들어오지 않게 하는
   정적 검사(`echo "LAST=` 금지, `printf 'LAST=%s` 존재)만 테스트로 남겼다.
 - `⚠`는 mod 코드에 없다. 엔진이 붙이는 표시로 보이지만 확인하지 못했고 mod에서 바꿀 수 없다. 없애려면 상태 줄 자체를 끄는 수밖에 없다(`$.ui.status(undefined)`).
+- 2026-10-08 `register.tsx:27`의 `$.ui.status(statusText(...))` 호출을 지웠다(위 `⚠` 중복 표시가 이 호출에서 나왔다). `statusText`는 `logic.ts`에 그대로 남겨 테스트가 계속 검증한다.
+- 2026-10-08 `AbovePrompt`를 완전히 뺐다. 이유는 debrief-mod와 같다: `AbovePrompt`는 한 인스턴스뿐이라 두 모드의 밴드가 한 줄에 뒤섞여 보였다. ask/deny 판정과 decide/decide_many 결과 모두 `$.ui.toast`로 옮겼다 — 판정 토스트에는 질의 명령(`gateAlert`가 돌려주는 `command`)도 붙였다. `decision`/`isHidden`/`alert` state는 더는 읽는 곳이 없어 지웠다; `Alert`/`Decision` 타입은 `logic.ts`의 `gateAlert`/`parseDecision` 반환형으로 여전히 쓰여 남겼다.

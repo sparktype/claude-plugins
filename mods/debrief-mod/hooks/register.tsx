@@ -2,18 +2,15 @@
 import { atom, read, update } from 'claude-code'
 import type { Register } from 'claude-code'
 
-import type { Brief, Ownership } from '../types'
-import { isRiskyBash, isSensitivePath, parseCommand, parseLastQuestion, speakViolation, statusLine, voiceLabel } from './rules'
+import type { Brief } from '../types'
+import { isRiskyBash, isSensitivePath, parseCommand, parseLastQuestion, speakViolation, statusLine } from './rules'
 
 const SPEAK = 'mcp__debrief__speak'
 const PANE = 'debrief-log'
 const EDIT_TOOLS = ['Edit', 'Write', 'MultiEdit', 'NotebookEdit']
 
 const briefs = atom({ plugin: 'debrief-mod', key: 'briefs' } as const, [])
-const ownership = atom({ plugin: 'debrief-mod', key: 'ownership' } as const, null)
 const status = atom({ plugin: 'debrief-mod', key: 'status' } as const, null)
-const isHidden = atom({ plugin: 'debrief-mod', key: 'isHidden' } as const, false)
-const lastQuestion = atom({ plugin: 'debrief-mod', key: 'lastQuestion' } as const, null)
 
 export const register: Register = on => {
   // ponytail: 모듈 변수라 핫 리로드 때 초기화됨. 세션 걸쳐 유지가 필요하면 $.state로 이전.
@@ -87,7 +84,6 @@ export const register: Register = on => {
     files = new Set()
     risky = []
     sensitive = []
-    await update($, ownership, () => null)
     const home = (await $.env.get('HOME')) ?? ''
     try {
       const ran = await $.process.run([`${home}/.local/bin/debrief`, 'status'], { timeoutMs: 15000 })
@@ -137,50 +133,24 @@ export const register: Register = on => {
     return next(e)
   })
 
-  // 마지막 AskUserQuestion: 질문과 사용자가 고른 답을 저장해 프롬프트 위에 보여준다.
+  // 마지막 AskUserQuestion: 질문과 사용자가 고른 답을 토스트로 보여준다.
   on('tool.call', { tool: 'AskUserQuestion' }, async ($, e, next) => {
     const ran = await next(e)
     const parsed = ran.deny === undefined && !ran.isError ? parseLastQuestion(ran.result as Record<string, unknown>) : undefined
-    if (parsed) await update($, lastQuestion, () => parsed)
+    if (parsed) $.ui.toast(`질문: ${parsed.question} → ${parsed.answer}`, { timeoutMs: 10000 })
 
     return ran
   })
 
   on('turn.complete', async ($, e, next) => {
     if (files.size + risky.length > 0) {
-      const summary: Ownership = { files: files.size, risky: [...risky], sensitive: [...sensitive] }
-      await update($, ownership, () => summary)
-      await update($, isHidden, () => false)
+      const parts = [`수정 ${files.size}개`]
+      if (risky.length) parts.push(`위험 명령 ${risky.length}개(${risky[0]})`)
+      if (sensitive.length) parts.push(`민감 경로 ${sensitive.length}개`)
+      $.ui.toast(`직접 확인: ${parts.join(' · ')}`, { timeoutMs: 10000 })
     }
 
     return next(e)
-  })
-
-  // 프롬프트 위 테두리 없는 한 줄: 상태 한 줄 + (있으면) 오너십 요약. 상태가 아직 없으면 '…'를 보인다. 마지막 speak의 목소리를 덧붙인다.
-  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    const line = (await read($, status)) ?? '…'
-    if (e.props.hasSurvey) return next(e)
-
-    const lastVoice = (await read($, briefs)).at(-1)?.voice
-    const summary = await read($, ownership)
-    const isShown = summary !== null && !(await read($, isHidden))
-    const question = await read($, lastQuestion)
-    const { Box, Button, Text } = $.ui.resolve(e)
-    const parts: string[] = []
-    if (isShown) {
-      parts.push(`수정 ${summary.files}개`)
-      if (summary.risky.length) parts.push(`위험 명령 ${summary.risky.length}개(${summary.risky[0]})`)
-      if (summary.sensitive.length) parts.push(`민감 경로 ${summary.sensitive.length}개`)
-    }
-
-    return (
-      <Box paddingX={1} gap={2}>
-        <Text>{lastVoice ? `${line} · ${voiceLabel(lastVoice)}` : line}</Text>
-        {question && <Text dimColor>질문: {question.question} → {question.answer}</Text>}
-        {isShown && <Text dimColor>직접 확인: {parts.join(' · ')}</Text>}
-        {isShown && <Button key="hide" label="숨김" onPress={() => update($, isHidden, () => true)} />}
-      </Box>
-    )
   })
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {

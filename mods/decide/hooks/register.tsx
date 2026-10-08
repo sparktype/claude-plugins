@@ -2,17 +2,14 @@
 import { atom, read, update } from 'claude-code'
 import type { Register } from 'claude-code'
 
-import type { Decision, Gate } from '../types'
-import { COLORS, ROUTE_SCRIPT, STATUS_SCRIPT, allowShare, gateAlert, matchesCommand, panelModel, parseDecision, parseGate, resolveRoute, statusText, summarizeLog } from './logic'
+import type { Gate } from '../types'
+import { COLORS, ROUTE_SCRIPT, STATUS_SCRIPT, allowShare, gateAlert, matchesCommand, panelModel, parseDecision, parseGate, resolveRoute, summarizeLog } from './logic'
 
 const PANE = 'decide-stats'
 const gate = atom({ plugin: 'decide', key: 'gate' } as const, null)
 const isDaemonUp = atom({ plugin: 'decide', key: 'isDaemonUp' } as const, false)
-const decision = atom({ plugin: 'decide', key: 'decision' } as const, null)
-const isHidden = atom({ plugin: 'decide', key: 'isHidden' } as const, false)
 const stats = atom({ plugin: 'decide', key: 'stats' } as const, '')
 const route = atom({ plugin: 'decide', key: 'route' } as const, null)
-const alert = atom({ plugin: 'decide', key: 'alert' } as const, null)
 
 // gate.log 마지막 줄, 모델이 답한 마지막 줄, 데몬 소켓을 읽어 상태 줄을 갱신한다. 마지막 줄을 돌려준다.
 // 규칙·사전 필터 줄은 backend가 비어 있어 상태 줄에는 모델이 답한 마지막 줄을 쓴다.
@@ -24,7 +21,6 @@ async function refresh($: any): Promise<Gate | null> {
   const daemon = run.stdout.split('\n').includes('UP')
   await update($, gate, () => model)
   await update($, isDaemonUp, () => daemon)
-  $.ui.status(statusText(model, daemon))
   return last
 }
 
@@ -60,16 +56,14 @@ export const register: Register = on => {
       seenTs = latest.ts
       const note = gateAlert(latest)
       if (note) {
-        $.ui.toast(note.text, { timeoutMs: 10_000 })
-        await update($, alert, () => note)
-        $.clock.after(10_000, () => void update($, alert, cur => (cur?.ts === note.ts ? null : cur)))
+        $.ui.toast(`${note.text} · 질의: ${note.command}`, { timeoutMs: 10_000 })
       }
     }
 
     return ran
   })
 
-  // 4. 판정 밴드: decide, decide_many 결과를 저장해 프롬프트 위에 보여준다.
+  // 4. 판정 토스트: decide, decide_many 결과를 보여준다.
   // 플러그인이 묶은 MCP는 mcp__plugin_decide_decide__*, `decide install`이 등록한 MCP는 mcp__decide__*로 보인다.
   for (const tool of [
     'mcp__plugin_decide_decide__decide',
@@ -82,8 +76,8 @@ export const register: Register = on => {
       const parsed = ran.isError || ran.text === undefined ? null : parseDecision(ran.text)
 
       if (parsed) {
-        await update($, decision, () => parsed)
-        await update($, isHidden, () => false)
+        const head = `decide · ${parsed.backend}/${parsed.model} · ${parsed.cached ? 'cached' : `${Math.round(parsed.latencyMs)}ms`}`
+        $.ui.toast([head, ...parsed.lines.slice(0, 6)].join(' · '), { timeoutMs: 10_000 })
       }
 
       return ran
@@ -167,43 +161,6 @@ export const register: Register = on => {
             {section.note && <Text dimColor>{section.note}</Text>}
           </Box>
         ))}
-      </Box>
-    )
-  })
-
-  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    const last: Decision | null = await read($, decision)
-    const flash = await read($, alert)
-    const isShown = last !== null && !(await read($, isHidden))
-
-    if (e.props.hasSurvey || (!flash && !isShown)) {
-      return next(e)
-    }
-
-    const { Box, Button, Text } = $.ui.resolve(e)
-
-    return (
-      <Box flexDirection="column">
-        {flash && (
-          <Text>
-            <Text color={flash.color}>● </Text>
-            <Text bold>decide </Text>
-            <Text>{flash.text}</Text>
-          </Text>
-        )}
-        {isShown && last && (
-          <Box flexDirection="column">
-            <Box>
-              <Text dimColor>
-                decide · {last.backend}/{last.model} · {last.cached ? 'cached' : `${Math.round(last.latencyMs)}ms`}{' '}
-              </Text>
-              <Button key="hide" label="Hide" onPress={() => update($, isHidden, () => true)} />
-            </Box>
-            {last.lines.slice(0, 6).map(line => (
-              <Text>{line}</Text>
-            ))}
-          </Box>
-        )}
       </Box>
     )
   })

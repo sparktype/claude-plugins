@@ -37,7 +37,7 @@ export function gateAlert(gate: Gate): Alert | undefined {
   if (!color) return undefined
   const top = Math.max(gate.allow, gate.ask, gate.deny)
   const why = gate.rule ? `rule ${gate.rule}` : `${pct(top)}%`
-  return { ts: gate.ts, text: `gate ${gate.verdict} · ${why}`, color }
+  return { ts: gate.ts, text: `gate ${gate.verdict} · ${why}`, color, command: gate.command }
 }
 
 // 엔진이 상태 줄 앞에 플러그인 이름(decide:)을 붙이므로 문구에는 다시 넣지 않는다.
