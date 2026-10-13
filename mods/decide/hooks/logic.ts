@@ -35,8 +35,9 @@ export function matchesCommand(gate: Gate, command: string): boolean {
 export function gateAlert(gate: Gate): Alert | undefined {
   const color = gate.verdict === 'ask' ? COLORS.ask : gate.verdict === 'deny' ? COLORS.deny : undefined
   if (!color) return undefined
-  const top = Math.max(gate.allow, gate.ask, gate.deny)
-  const why = gate.rule ? `rule ${gate.rule}` : `${pct(top)}%`
+  const why = gate.rule
+    ? `rule ${gate.rule}`
+    : `allow ${pct(gate.allow)} · ask ${pct(gate.ask)} · deny ${pct(gate.deny)} · ${Math.round(gate.latencyMs)}ms`
   return { ts: gate.ts, text: `gate ${gate.verdict} · ${why}`, color, command: gate.command }
 }
 
